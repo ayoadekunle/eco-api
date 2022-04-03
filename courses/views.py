@@ -1,20 +1,20 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from students.models import Student
-from students.serializers import StudentSerializer
+from courses.models import Course
+from courses.serializers import CourseSerializer
 
 
 @csrf_exempt
-def student_list(request):
+def course_list(request):
     if request.method == 'GET':
-        students = Student.objects.all()
-        serializer = StudentSerializer(students, many=True)
+        courses = Course.objects.all()
+        serializer = CourseSerializer(courses, many=True)
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = StudentSerializer(data=data)
+        serializer = CourseSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
@@ -22,24 +22,24 @@ def student_list(request):
 
 
 @csrf_exempt
-def student_detail(request, pk):
+def course_detail(request, pk):
     try:
-        student = Student.objects.get(pk=pk)
-    except Student.DoesNotExist:
+        course = Course.objects.get(pk=pk)
+    except Course.DoesNotExist:
         return HttpResponse(status=404)
 
     if request.method == 'GET':
-        serializer = StudentSerializer(student)
+        serializer = CourseSerializer(course)
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = StudentSerializer(student, data=data)
+        serializer = CourseSerializer(course, data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data)
         return JsonResponse(serializer.errors, status=400)
 
     elif request.method == 'DELETE':
-        student.delete()
+        course.delete()
         return HttpResponse(status=204)

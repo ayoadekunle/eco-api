@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'users',
     'teachers',
     'students',
+    'courses',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -185,3 +186,4 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
+

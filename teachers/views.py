@@ -3,6 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from teachers.models import Teacher
 from teachers.serializers import TeacherSerializer
+from courses.models import Course
+from courses.serializers import CourseSerializer
 
 
 @csrf_exempt
@@ -23,7 +25,6 @@ def teacher_list(request):
 
 @csrf_exempt
 def teacher_detail(request, pk):
-
     try:
         teacher = Teacher.objects.get(pk=pk)
     except Teacher.DoesNotExist:
@@ -44,3 +45,26 @@ def teacher_detail(request, pk):
     elif request.method == 'DELETE':
         teacher.delete()
         return HttpResponse(status=204)
+
+
+@csrf_exempt
+def teacher_course_list(request, pk):
+    try:
+        teacher = Teacher.objects.get(pk=pk)
+    except Teacher.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        courses = teacher.courses.all()
+        serializer = CourseSerializer(courses, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = CourseSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            course = Course.objects.get(**serializer.data)
+            teacher.courses.add(course)
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)

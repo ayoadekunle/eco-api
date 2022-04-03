@@ -5,6 +5,6 @@ from .models import Student
 
 
 @receiver(post_save, sender=User)
-def create_teacher(sender, instance, created, **kwargs):
+def create_student(sender, instance, created, **kwargs):
     if created:
         Student.objects.create(user=instance)
