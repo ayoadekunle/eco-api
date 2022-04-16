@@ -5,5 +5,5 @@ from users import views
 
 urlpatterns = [
     path('', views.user_list),
-    path('<int:pk>', views.user_detail),
+    path('<int:pk>/', views.user_detail),
 ]

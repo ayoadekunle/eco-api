@@ -1,4 +1,5 @@
 from django.db import models
+from colorfield.fields import ColorField
 
 
 class Course(models.Model):
@@ -11,6 +12,7 @@ class Course(models.Model):
     is_starred = models.BooleanField(default=False)
     date_created = models.DateField(auto_now_add=True)
     expiry_date = models.DateField()
+    color = ColorField()
 
     def __str__(self):
         return self.title
